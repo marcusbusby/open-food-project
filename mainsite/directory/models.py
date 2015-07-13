@@ -7,6 +7,13 @@ class Food(models.Model):
 	base_amount = models.IntegerField()
 	base_unit = models.CharField(max_length = 10)
 
+class Company(models.Model):
+	id = models.AutoField(primary_key = True)
+	name = models.CharField(max_length = 30)
+	parent = models.IntegerField()
+
+
+
 
 
 # Create your models here.

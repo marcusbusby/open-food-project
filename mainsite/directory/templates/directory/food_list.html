@@ -1,3 +1,7 @@
+{% extends "directory/base.html" %}
+
+{% block content %}
 {% for food in foods %}
-	{{ food.name }} | {{ food.base_amount }} | {{ food.base_unit }} {{ linebreaks }}
+	<h1><a href="{% url "directory.views.food_detail" pk=food.pk %}">{{ food.name | linebreaks }}</a></h1>
 {% endfor %}
+{% endblock content %}
