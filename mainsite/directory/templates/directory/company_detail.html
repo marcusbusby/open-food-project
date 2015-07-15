@@ -1,1 +1,19 @@
+<p>Company name</p>
+{{ company.name }}
+
+<p>Company parent</p>
 {{ company.parent }}
+
+<p>Subsidiaries</p>
+
+{{ company.get_subsidiaries }}
+
+<p>Family</p>
+
+{{ company.get_lineage }}
+
+<p>Products</p>
+
+{% for food in foods %}
+	{{food.name}}
+{% endfor %}
