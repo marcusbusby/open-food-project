@@ -1,5 +1,36 @@
-<p>{{ food.name }} </p>
+{% extends "directory/base.html" %}
+
+{% block content %}
+
+<div class="page-header text-center">
+  <h1>{{ food.name }}</h1>
+</div>
+
+<div class="page-header text-center">
+	<h2>Nutrition</h2>
+</div>
 
 {{ food.base_amount }} {{ food.base_unit }}
 
-<p>{{ food.get_contents }}</p>
+<div class="page-header text-center">
+	<h2>Company</h2>
+</div>
+
+<a href="{% url "directory.views.company_detail" pk=food.company.pk %}">{{ food.company.name }}</a>
+
+<div class="page-header text-center">
+	<h2>Contents</h2>
+</div>
+
+{% for key, value in contents.items %}
+	<div class="btn-group" role="group" aria-label="...">
+	  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=value.1 %}">{{ value.0 }}</a></button>
+	  <button type="button" class="btn btn-default">{{ value.2|stringformat:"i" }}{{ value.3 }}</button>
+	</div>
+{% endfor %}
+
+<!--FoodMap.objects.filter(target=food && component=content).amount
+FoodMap.objects.filter(target=food && component=content).unit-->
+
+
+{% endblock content %}

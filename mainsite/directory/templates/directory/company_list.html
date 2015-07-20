@@ -1,7 +1,33 @@
 {% extends "directory/base.html" %}
 
 {% block content %}
-	{% for company in companies %}
-		<h1><a href="{% url "directory.views.company_detail" pk=company.pk %}">{{ company.name }}</a></h1>
+
+<!-- Split button -->
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Sort By
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    <li><a href="#">Company Name</a></li>
+    <li><a href="#">Number of Foods</a></li>
+  </ul>
+</div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>name</th>
+        <th>parent</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for company in companies %}
+    	<tr>
+	        <td><a href="{% url "directory.views.company_detail" pk=company.pk %}">{{ company.name }}</a></td>
+	        <td><a href="{% url "directory.views.company_detail" pk=company.get_ancestor.pk %}">{{ company.get_ancestor.name }}</a></td>
+	     </tr>
 	{% endfor %}
+	</tbody>
+  </table>
 {% endblock content %}

@@ -1,19 +1,34 @@
-<p>Company name</p>
-{{ company.name }}
+{% extends "directory/base.html" %}
 
-<p>Company parent</p>
-{{ company.parent }}
+{% block content %}
 
-<p>Subsidiaries</p>
+<div class="page-header text-center">
+  <h1>{{ company.name }}</h1>
+</div>
 
+<div class="page-header text-center">
+	<h3>Parent Company</h3>
+</div>
+{% if company.parent != None %}
+	{{ company.parent }}
+{% endif %}
+
+<div class="page-header text-center">
+	<h3>Subsidiaries</h3>
+</div>
 {{ company.get_subsidiaries }}
 
-<p>Family</p>
-
+<div class="page-header text-center">
+	<h3>Family</h3>
+</div>
 {{ company.get_lineage }}
 
-<p>Products</p>
+<div class="page-header text-center">
+<h3>Products</h3>
+</div>
 
 {% for food in foods %}
-	{{food.name}}
+	<button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=food.pk %}">{{ food.name }}</a></button>
 {% endfor %}
+
+{% endblock content %}

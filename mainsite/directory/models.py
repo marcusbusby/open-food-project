@@ -1,21 +1,32 @@
 from django.db import models
 from django.utils import timezone
 
-
+GRAMS = 'g'
+KILOGRAMS = 'kg'
+FLUID_OUNCES = 'fl oz'
+OUNCES = 'oz'
+UNIT_OF_MEASURE = ((GRAMS, 'g'), (KILOGRAMS, 'kg'), (FLUID_OUNCES,'fl oz'), (OUNCES, 'oz'))
 
 class Food(models.Model):
 	id = models.AutoField(primary_key = True)
 	name = models.CharField(max_length = 30)
 	base_amount = models.IntegerField()
-	base_unit = models.CharField(max_length = 10)
+	base_unit = models.CharField(max_length = 10, choices=UNIT_OF_MEASURE)
 	components = models.ManyToManyField("self", through='FoodMap', symmetrical=False, related_name='component+', null = True, blank = True)
 	company = models.ForeignKey('Company', null=True, blank=True)
 
 	def get_contents(self):
+		content_list = []
+		foodmaps = FoodMap.objects.filter(target = self)
+		for foodmap in foodmaps:
+			content_list.append(foodmap.component)
+		return content_list
+
+	def get_view_contents(self):
 		content_dict = {}
 		foodmaps = FoodMap.objects.filter(target = self)
 		for foodmap in foodmaps:
-			content_dict[foodmap.component.name] = foodmap.amount.__str__() + foodmap.unit.__str__()
+			content_dict[foodmap.component] = [foodmap.component.name, foodmap.component.pk, foodmap.amount, foodmap.unit.__str__()]
 		return content_dict
 
 	def __unicode__(self):
@@ -44,8 +55,6 @@ class Company(models.Model):
 			subs.append(sub.get_subsidiaries(include_self=True))
 		return subs
 
-
-
 	def get_lineage(self):
 		company = self
 		while company.parent is not None:
@@ -54,15 +63,13 @@ class Company(models.Model):
 		addendum = company.get_subsidiaries()
 		lineage.append(addendum)
 		return lineage
-		
 
-"""def get_food_contents(food):
-	targetfood = Food.object.get(name = food)
-	content_dict = {}
-	foodmaps = FoodMap.objects.filter(target = targetfood)
-	for foodmap in foodmaps:
-		content_dict.append(key=foodmap.component.name, value=foodmap.component.amount)
-	return content_dict"""
+	def get_ancestor(self):
+		company = self
+		while company.parent is not None:
+			company = company.parent
+		return company
+		
 
 
 

@@ -1,0 +1,10 @@
+{% extends "directory/base.html" %}
+
+{% block content %}
+
+<h2>Hi {{ full_name }}, you're logged in now!</h2>
+<p>Click <a href="/accounts/logout/">here</a>to logout.</p>
+
+<p> Click <a href="{% url "userprofile.views.user_profile" %}">here</a> to edit your profile information</p>
+
+{% endblock content %}

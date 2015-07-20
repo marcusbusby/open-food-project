@@ -1,7 +1,10 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Food, Company
-from .forms import FoodForm, CompanyForm
+from .models import Food, Company, FoodMap
+from .forms import FoodForm, CompanyForm, ComponentForm
 from django.shortcuts import redirect
+
+def home(request):
+	return render(request, 'directory/home.html')
 
 def food_list(request):
 	foods = Food.objects.all()
@@ -9,7 +12,8 @@ def food_list(request):
 
 def food_detail(request, pk):
 	food = get_object_or_404(Food, pk=pk)
-	return render(request, 'directory/food_detail.html', {'food': food})
+	contents = food.get_view_contents
+	return render(request, 'directory/food_detail.html', {'food': food, 'contents': contents})
 
 def food_new(request):
 	if request.method == "POST":
@@ -32,6 +36,17 @@ def food_edit(request, pk):
 			return redirect('directory.views.food_detail', pk=food.pk)
 	else:
 		form = FoodForm(instance=food)
+	return render(request, 'directory/edit.html', {'form': form})
+
+def component_new(request):
+	if request.method == "POST":
+		form = ComponentForm(request.POST)
+		if form.is_valid():
+			food = form.save(commit=False)
+			food.save()
+			return redirect('directory.views.food_list')
+	else:
+		form = ComponentForm()
 	return render(request, 'directory/edit.html', {'form': form})
 
 
@@ -75,9 +90,9 @@ def company_edit(request, pk):
 
 #to do tomorrow
 
+#change get_contents to return a list
 #add links to templates that go back and forth between data
 #ensure models methods are correct with carl
-#make sure forms work
 #add a function that gets the foods of a company
 #add a function that calibrates the units of 
 #change base unit to choice area
