@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
 from mainsite.forms import MyRegistrationForm
+from django.contrib.auth.forms import UserCreationForm
 
 def login(request):
 	c = {}

@@ -16,7 +16,7 @@
 	<h2>Company</h2>
 </div>
 
-<a href="{% url "directory.views.company_detail" pk=food.company.pk %}">{{ food.company.name }}</a>
+{{ food.company.name }}
 
 <div class="page-header text-center">
 	<h2>Contents</h2>
@@ -28,6 +28,7 @@
 	  <button type="button" class="btn btn-default">{{ value.2|stringformat:"i" }}{{ value.3 }}</button>
 	</div>
 {% endfor %}
+
 
 <!--FoodMap.objects.filter(target=food && component=content).amount
 FoodMap.objects.filter(target=food && component=content).unit-->

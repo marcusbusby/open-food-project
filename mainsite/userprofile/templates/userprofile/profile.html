@@ -3,6 +3,7 @@
 {% block content %}
 
 	<h2>Profile<h2>
+		{{ user.username }}
 
 	{% for field in form %}
 		{{ field.error }}
@@ -10,10 +11,13 @@
 	{% endfor %}
 
 	<form method="post">{% csrf_token %}
-		{{ form.as_ul }}
+		{{ form.as_p }}
 
 	<input type="submit" value="Update" />
 
 	</form>
+	{{ user.food_set.all }}
+	{{ user.foodmap_set.all }}
+	{{ user.company_set.all }}
 
 {% endblock %}

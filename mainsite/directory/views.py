@@ -19,9 +19,8 @@ def food_new(request):
 	if request.method == "POST":
 		form = FoodForm(request.POST)
 		if form.is_valid():
-			food = form.save(commit=False)
-			food.save()
-			return redirect('directory.views.food_detail', pk=food.pk)
+			form.save(request.user)
+			return redirect('directory.views.food_detail', pk=form.instance.pk)
 	else:
 		form = FoodForm()
 	return render(request, 'directory/edit.html', {'form': form})
@@ -42,8 +41,7 @@ def component_new(request):
 	if request.method == "POST":
 		form = ComponentForm(request.POST)
 		if form.is_valid():
-			food = form.save(commit=False)
-			food.save()
+			form.save(request.user)
 			return redirect('directory.views.food_list')
 	else:
 		form = ComponentForm()
@@ -68,9 +66,8 @@ def company_new(request):
 	if request.method == "POST":
 		form = CompanyForm(request.POST)
 		if form.is_valid():
-			company = form.save(commit=False)
-			company.save()
-			return redirect('directory.views.company_detail', pk=company.pk)
+			form.save(request.user)
+			return redirect('directory.views.company_detail', pk=form.instance.pk)
 	else:
 		form = CompanyForm()
 	return render(request, 'directory/edit.html', {'form': form})
