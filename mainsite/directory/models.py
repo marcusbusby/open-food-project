@@ -75,6 +75,18 @@ class Company(models.Model):
 			company = company.parent
 		return company
 		
+class CompanyPhoto(models.Model):
+	photo = models.ImageField(upload_to='photos')
+	title = models.CharField(max_length=50)
+	company = models.ForeignKey(Company)
+	user = models.ForeignKey(User)
+
+class FoodPhoto(models.Model):
+	photo = models.ImageField(upload_to='photos')
+	title = models.CharField(max_length=50)
+	food = models.ForeignKey(Food)
+	user = models.ForeignKey(User)
+
 
 """base_amount = models.IntegerField()
 	base_unit = models.CharField(max_length = 10, choices=UNIT_OF_MEASURE)"""

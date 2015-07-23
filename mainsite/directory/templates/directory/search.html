@@ -1,0 +1,59 @@
+{% if foods %}
+
+<div class="page-header text-center">
+  <h3>Products</h3>
+</div>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th>name</th>
+        <th>company</th>
+      </tr>
+    </thead>
+    <tbody>
+	    {% for food in foods %}
+	    	<tr>
+		        <td><a href="{% url "directory.views.food_detail" pk=food.pk %}">{{ food.name }}</a></td>
+		        <td>{{ food.company.name }}</a></td>
+		     </tr>
+		{% endfor %}
+	</tbody>
+ </table>
+
+{% else %}
+
+<p>There isn't any food to show</p>
+
+{% endif %}
+
+
+{% if companies %}
+
+<div class="page-header text-center">
+  <h3>Companies</h3>
+</div>
+
+ <table class="table">
+    <thead>
+      <tr>
+        <th>name</th>
+        <th>parent</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for company in companies %}
+    	<tr>
+	        <td><a href="{% url "directory.views.company_detail" pk=company.pk %}">{{ company.name }}</a></td>
+	        <td><a href="{% url "directory.views.company_detail" pk=company.get_ancestor.pk %}">{{ company.get_ancestor.name }}</a></td>
+	     </tr>
+	{% endfor %}
+	</tbody>
+ </table>
+
+ {% else %}
+
+ <p>There aren't any companies to show</p>
+
+ {% endif %}
+

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Food, Company, FoodMap
+from .models import Food, Company, FoodMap, CompanyPhoto, FoodPhoto
 
 class FoodForm(forms.ModelForm):
 
@@ -44,3 +44,31 @@ class ComponentForm(forms.ModelForm):
 		if commit:
 			component.save()
 		return component
+
+class CompanyPhotoForm(forms.ModelForm):
+
+	class Meta:
+		model = CompanyPhoto
+		fields = ['photo', 'title', 'company']
+		exclude = ('user',)
+
+	def save(self, user, commit=True):
+		companyphoto = forms.ModelForm.save(self, commit=False)
+		companyphoto.user = user
+		if commit:
+			companyphoto.save()
+		return companyphoto
+
+class FoodPhotoForm(forms.ModelForm):
+
+	class Meta:
+		model = FoodPhoto
+		fields = ['photo', 'title', 'food']
+		exclude = ('user',)
+
+	def save(self, user, commit=True):
+		foodphoto = forms.ModelForm.save(self, commit=False)
+		foodphoto.user = user
+		if commit:
+			foodphoto.save()
+		return foodphoto

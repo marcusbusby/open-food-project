@@ -88,6 +88,9 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
+MEDIA_ROOT = '/Users/marcusbusby/desktop/open-food/mainsite/media/'
+MEDIA_URL = '/media/'
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -101,7 +104,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-
+STATIC_ROOT = '/Users/marcusbusby/desktop/open-food/mainsite/'
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    ('assets', '/Users/marcusbusby/desktop/open-food/mainsite/static/'),
+    )
 
 AUTH_PROFILE_MODULE = 'userprofile.UserProfile'

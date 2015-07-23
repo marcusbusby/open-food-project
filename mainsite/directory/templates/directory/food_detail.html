@@ -6,6 +6,12 @@
   <h1>{{ food.name }}</h1>
 </div>
 
+{% for photo in photos %}
+	<img src="{{ photo.photo.url }}"/>
+{% endfor %}
+
+<a href="{% url "directory.views.food_photo_new" %}">add a food photo</a>
+
 <div class="page-header text-center">
 	<h2>Nutrition</h2>
 </div>

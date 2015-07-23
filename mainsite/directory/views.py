@@ -1,10 +1,31 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Food, Company, FoodMap
-from .forms import FoodForm, CompanyForm, ComponentForm
+from .models import Food, Company, FoodMap, CompanyPhoto, FoodPhoto
+from .forms import FoodForm, CompanyForm, ComponentForm, CompanyPhotoForm, FoodPhotoForm
 from django.shortcuts import redirect
 
-def home(request):
-	return render(request, 'directory/home.html')
+def search(request):
+	if request.method == "GET":
+		search_text = request.GET['search_text']
+	else: 
+		search_text = ''
+
+	foods = Food.objects.filter(name__contains=search_text)
+	companies = Company.objects.filter(name__contains=search_text)
+
+
+	# import pdb; pdb.set_trace()
+
+	return render(request, 'directory/search.html', {'foods':foods, 'companies':companies})
+
+def food_sort(request):
+	if request.method == "GET":
+		sort_value = request.GET['sort_value']
+
+	foods = Food.objects.order_by(sort_value)
+
+	# import pdb; pdb.set_trace()
+
+	return render(request, 'directory/food_sort.html', {'foods':foods})
 
 def food_list(request):
 	foods = Food.objects.all()
@@ -30,9 +51,8 @@ def food_edit(request, pk):
 	if request.method == "POST":
 		form = FoodForm(request.POST, instance=food)
 		if form.is_valid():
-			food = form.save(commit=False)
-			food.save()
-			return redirect('directory.views.food_detail', pk=food.pk)
+			form.save(request.user)
+			return redirect('directory.views.food_detail', pk=form.instance.pk)
 	else:
 		form = FoodForm(instance=food)
 	return render(request, 'directory/edit.html', {'form': form})
@@ -59,8 +79,10 @@ def company_list(request):
 
 def company_detail(request, pk):
 	company = get_object_or_404(Company, pk=pk)
+	photos = CompanyPhoto.objects.filter(company=company)
 	foods = Food.objects.filter(company=company)
-	return render(request, 'directory/company_detail.html', {'company': company, 'foods': foods})
+	#import pdb; pdb.set_trace()
+	return render(request, 'directory/company_detail.html', {'company': company, 'foods': foods, 'photos':photos})
 
 def company_new(request):
 	if request.method == "POST":
@@ -77,13 +99,32 @@ def company_edit(request, pk):
 	if request.method == "POST":
 		form = CompanyForm(request.POST, instance=company)
 		if form.is_valid():
-			company = form.save(commit=False)
-			company.save()
-			return redirect('directory.views.company_detail', pk=company.pk)
+			form.save(request.user)
+			return redirect('directory.views.company_detail', pk=form.instance.pk)
 	else:
 		form = CompanyForm(instance=company)
 	return render(request, 'directory/edit.html', {'form': form})
 # Create your views here.
+
+def company_photo_new(request):
+	if request.method == "POST":
+		form = CompanyPhotoForm(request.POST, request.FILES)
+		if form.is_valid():
+			form.save(request.user)
+			return redirect('mainsite.views.home')
+	else:
+		form = CompanyPhotoForm()
+	return render(request, 'directory/editimage.html', {'form':form})
+
+def food_photo_new(request):
+	if request.method == "POST":
+		form = FoodPhotoForm(request.POST, request.FILES)
+		if form.is_valid():
+			form.save(request.user)
+			return redirect('mainsite.views.home')
+	else:
+		form = FoodPhotoForm()
+	return render(request, 'directory/editimage.html', {'form':form})
 
 #to do tomorrow
 

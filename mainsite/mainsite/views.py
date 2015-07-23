@@ -1,9 +1,13 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
 from mainsite.forms import MyRegistrationForm
 from django.contrib.auth.forms import UserCreationForm
+
+
+def home(request):
+	return render(request, 'directory/home.html')
 
 def login(request):
 	c = {}
@@ -17,7 +21,7 @@ def auth_view(request):
 
 	if user is not None:
 		auth.login(request, user)
-		return HttpResponseRedirect('/accounts/loggedin')
+		return HttpResponseRedirect('/accounts/profile')
 	else:
 		return HttpResponseRedirect('/accounts/invalid')
 

@@ -6,6 +6,12 @@
   <h1>{{ company.name }}</h1>
 </div>
 
+{% for photo in photos %}
+	<img src="{{ photo.photo.url }}"/>
+{% endfor %}
+
+<a href="{% url "directory.views.company_photo_new" %}">add a company photo</a>
+
 <div class="page-header text-center">
 	<h3>Parent Company</h3>
 </div>
