@@ -1,4 +1,4 @@
-{% extends "directory/base.html" %}
+{% extends "mainsite/base.html" %}
 
 {% block content %}
 
@@ -14,6 +14,22 @@
     <li class="sort"><a href="{% url "directory.views.food_sort" %}">Nutrition</a></li>
   </ul>
 </div>
+<table class="table">
+<thead>
+  <tr>
+    <th>name</th>
+    <th>company</th>
+  </tr>
+</thead>
+<tbody>
+	{% for food in foods %}
+		<tr>
+	        <td><a href="{% url "directory.views.food_detail" pk=food.pk %}">{{ food.name }}</a></td>
+	        <td>{{ food.company.name }}</a></td>
+	     </tr>
+	{% endfor %}
+	</tbody>
+</table>
 <ul id="sort-results">
 
 </ul>

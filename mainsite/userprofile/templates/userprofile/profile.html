@@ -1,4 +1,4 @@
-{% extends "directory/base.html" %}
+{% extends "mainsite/base.html" %}
 
 {% block content %}
 
@@ -16,10 +16,129 @@
 	<input type="submit" value="Update" />
 
 	</form>
-	{{ user.food_set.all }}
-	{{ user.foodmap_set.all }}
-	{{ user.company_set.all }}
-	{{ user.companyphoto_set.all }}
-	{{ user.foodphoto_set.all }}
+	<h3>Food Entries</h3>
+	{% for food in foods %}
+		<div class="btn-group" role="group" aria-label="...">
+		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=food.pk %}">{{ food.name }}</a></button>
+		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#FoodModal{{ forloop.counter }}"><a>remove</a></button>
+		</div>
+		<div class="modal fade" id="FoodModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Delete {{ food.name }}?</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Are you sure you want to delete this entry?</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-danger"><a href="{% url "directory.views.food_delete" pk=food.pk %}">Delete</a></button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	{% endfor %}
+	<h3>Component Entries</h3>
+	{% for foodMap in foodMaps %}
+		<div class="btn-group" role="group" aria-label="...">
+		  <button type="button" class="btn btn-default">{{ foodMap.target }}</button>
+		  <button type="button" class="btn btn-default">{{ foodMap.component }}</button>
+		  <button type="button" class="btn btn-default">{{ foodMap.amount|stringformat:"i" }}{{ foodMap.unit }}
+		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#FoodMapModal{{ forloop.counter }}"><a>remove</a></button>
+		</div>
+		<div class="modal fade" id="FoodMapModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Delete {{ foodMap.target.name }} -- {{ foodMap.component.name }}?</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Are you sure you want to delete this entry?</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-danger"><a href="{% url "directory.views.component_delete" pk=foodMap.pk %}">Delete</a></button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	{% endfor %}
+	<h3>Company Entries</h3>
+	{% for company in companies %}
+		<div class="btn-group" role="group" aria-label="...">
+		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.company_detail" pk=company.pk %}">{{ company.name }}</a></button>
+		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CompanyModal{{ forloop.counter }}"><a>remove</a></button>
+		</div>
+		<div class="modal fade" id="CompanyModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Delete {{ company.name }}?</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Are you sure you want to delete this entry?</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-danger"><a href="{% url "directory.views.company_delete" pk=company.pk %}">Delete</a></button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	{% endfor %}
+	<h3>Photo Entries</h3>
+	{% for companyPhoto in companyPhotos %}
+		<div class="btn-group">
+		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.company_detail" pk=companyPhoto.company.pk %}">{{ companyPhoto.title }}</a></button>
+		  <button type="button" class="btn btn-default"> {{ companyPhoto.company.name }}</button>
+		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CompanyPhotoModal{{ forloop.counter }}"><a>remove</a></button>
+		</div>
+		<div class="modal fade" id="CompanyPhotoModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Delete {{ companyPhoto.title }}?</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Are you sure you want to delete this entry?</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-danger"><a href="{% url "directory.views.company_photo_delete" pk=companyPhoto.pk %}">Delete</a></button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	{% endfor %}
+	{% for foodPhoto in foodPhotos %}
+		<div class="btn-group" role="group" aria-label="...">
+		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=foodPhoto.food.pk %}">{{ foodPhoto.title }}</a></button>
+		  <button type="button" class="btn btn-default"> {{ foodPhoto.food.name }}</button>
+		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#FoodPhotoModal{{ forloop.counter }}"><a>remove</a></button>
+		</div>
+		<div class="modal fade" id="FoodPhotoModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Delete {{ foodPhoto.title }}?</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Are you sure you want to delete this entry?</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-danger"><a href="{% url "directory.views.food_photo_delete" pk=foodPhoto.pk %}">Delete</a></button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	{% endfor %}
+	
 
 {% endblock %}

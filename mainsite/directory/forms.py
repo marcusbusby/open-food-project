@@ -7,11 +7,13 @@ class FoodForm(forms.ModelForm):
 	class Meta:
 		model = Food
 		fields = ['name', 'company']
-		exclude = ('user',)
+		exclude = ('user', 'edit')
 
-	def save(self, user, commit=True):
+	def save(self, user, present=False, commit=True):
 		food = forms.ModelForm.save(self, commit=False)
 		food.user = user
+		if present:
+			food.edit = True
 		if commit:
 			food.save()
 		return food
@@ -22,7 +24,7 @@ class CompanyForm(forms.ModelForm):
 	class Meta:
 		model = Company
 		fields = ['name', 'parent']
-		exclude = ('user',)
+		exclude = ('user', 'edit',)
 
 	def save(self, user, commit=True):
 		company = forms.ModelForm.save(self, commit=False)

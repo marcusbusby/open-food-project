@@ -1,4 +1,4 @@
-{% extends "directory/base.html" %}
+{% extends "mainsite/base.html" %}
 
 {% block content %}
 
@@ -6,9 +6,18 @@
   <h1>{{ food.name }}</h1>
 </div>
 
+<div class="row">
 {% for photo in photos %}
-	<img src="{{ photo.photo.url }}"/>
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="{{ photo.photo.url }}"/>
+      <div class="caption">
+        <p class="text-center">{{ photo.title }}</p>
+      </div>
+    </div>
+  </div>
 {% endfor %}
+</div>
 
 <a href="{% url "directory.views.food_photo_new" %}">add a food photo</a>
 
@@ -28,7 +37,15 @@
 	<h2>Contents</h2>
 </div>
 
-{% for key, value in contents.items %}
+
+{% for foodmap in foodmaps %}
+	<div class="btn-group" role="group" aria-label="...">
+	  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=foodmap.component.pk %}">{{ foodmap.component.name }}</a></button>
+	  <button type="button" class="btn btn-default">{{ foodmap.amount|stringformat:"i" }}{{ foodmap.unit }}</button>
+	</div>
+{% endfor %}
+
+<!--{% for key, value in contents.items %}
 	<div class="btn-group" role="group" aria-label="...">
 	  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=value.1 %}">{{ value.0 }}</a></button>
 	  <button type="button" class="btn btn-default">{{ value.2|stringformat:"i" }}{{ value.3 }}</button>

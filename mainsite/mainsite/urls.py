@@ -22,13 +22,6 @@ urlpatterns = [
     url(r'^$', 'mainsite.views.home'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('directory.urls')),
-    url(r'^accounts/login/$', 'mainsite.views.login', name = 'login'),
-    url(r'^accounts/auth/$', 'mainsite.views.auth_view'),
-    url(r'^accounts/logout/$', 'mainsite.views.logout'),
-    url(r'^accounts/loggedin/$', 'mainsite.views.loggedin'),
-    url(r'^accounts/invalid/$', 'mainsite.views.invalid_login'),
-    url(r'^accounts/register/$', 'mainsite.views.register_user'),
-    url(r'^accounts/register_success/$', 'mainsite.views.register_success'),
     url(r'', include('userprofile.urls')),
 
 ]

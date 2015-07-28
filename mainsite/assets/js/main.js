@@ -1,12 +1,8 @@
 $(function(){
 
-	$('.myModal').on("show.bs.modal", function(evt) {
-		var linkobj = $(evt.relatedTarget);
-		$(this).find('.modal-body').load(linkobj.attr('href'))
+	$('#search').on("click", function(evt) {
+		console.log('click')
+		$('.jumbotron').remove();
 	});
 
-	$('.post-form').on('submit', function(event){
-		event.preventDefault();
-		console.log("form submitted!")
-	})
 });

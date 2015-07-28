@@ -4,9 +4,12 @@ from django.contrib.auth.models import User
 
 GRAMS = 'g'
 KILOGRAMS = 'kg'
+MILLIGRAMS = 'mg'
 FLUID_OUNCES = 'fl oz'
 OUNCES = 'oz'
-UNIT_OF_MEASURE = ((GRAMS, 'g'), (KILOGRAMS, 'kg'), (FLUID_OUNCES,'fl oz'), (OUNCES, 'oz'))
+LITERS = 'L'
+MILLILITERS = 'mL'
+UNIT_OF_MEASURE = ((GRAMS, 'g'), (KILOGRAMS, 'kg'), (MILLIGRAMS, 'mg'), (FLUID_OUNCES,'fl oz'), (OUNCES, 'oz'), (LITERS, 'L'), (MILLILITERS, 'mL'))
 
 class Food(models.Model):
 	id = models.AutoField(primary_key = True)
@@ -14,6 +17,7 @@ class Food(models.Model):
 	components = models.ManyToManyField("self", through='FoodMap', symmetrical=False, related_name='component+', null = True, blank = True)
 	company = models.ForeignKey('Company', null=True, blank=True)
 	user = models.ForeignKey(User)
+	edit = models.BooleanField(default=False)
 
 	def get_contents(self):
 		content_list = []
@@ -29,18 +33,20 @@ class Food(models.Model):
 			content_dict[foodmap.component] = [foodmap.component.name, foodmap.component.pk, foodmap.amount, foodmap.unit.__str__()]
 		return content_dict
 
-	def __unicode__(self):
+	def __str__(self):
 		return '%s' % self.name
 
 class FoodMap(models.Model):
 	target = models.ForeignKey(Food, related_name="target")
 	component = models.ForeignKey(Food, related_name="component")
-	amount = models.IntegerField()
-	unit = models.CharField(max_length = 10, choices=UNIT_OF_MEASURE)
-	base_amount = models.IntegerField()
-	base_unit = models.CharField(max_length=10, choices=UNIT_OF_MEASURE)
+	amount = models.IntegerField(null=True, blank=True)
+	unit = models.CharField(max_length = 10, choices=UNIT_OF_MEASURE, null=True, blank=True)
+	base_amount = models.IntegerField(null=True, blank=True)
+	base_unit = models.CharField(max_length=10, choices=UNIT_OF_MEASURE, null=True, blank=True)
 	citation = models.CharField(max_length=200)
 	user = models.ForeignKey(User)
+	edit = models.BooleanField(default=False)
+
 
 
 class Company(models.Model):
@@ -48,8 +54,9 @@ class Company(models.Model):
 	name = models.CharField(max_length = 30)
 	parent = models.ForeignKey('self', null=True, blank=True)
 	user = models.ForeignKey(User)
+	edit = models.BooleanField(default=False)
 
-	def __unicode__(self):
+	def __str__(self):
 		return '%s' % self.name
 
 	def get_subsidiaries(self, include_self=False):

@@ -7,12 +7,14 @@ $(function(){
 				'search_text' : $('#search').val(),
 				'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val()
 			},
-			success: searchSuccess,
-			dataType: 'html'
+			success: searchSuccess
 		});
 	});
 
-	$('.sort a').click(function(evt) {
+	$( "#search" ).keydown(function() {
+	  $('.jumbotron').remove();
+	});
+	/*$('.sort a').click(function(evt) {
 		evt.preventDefault();
 		$.ajax({
 			type: "GET",
@@ -24,7 +26,7 @@ $(function(){
 			success: sortSuccess,
 			dataType: 'html'
 		});
-	});
+	});*/
 });
 
 function sortSuccess(data, textStatus, jqXHR)

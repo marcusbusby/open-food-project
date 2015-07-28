@@ -1,4 +1,4 @@
-{% extends "directory/base.html" %}
+{% extends "mainsite/base.html" %}
 
 {% block content %}
 
@@ -6,9 +6,18 @@
   <h1>{{ company.name }}</h1>
 </div>
 
+<div class="row">
 {% for photo in photos %}
-	<img src="{{ photo.photo.url }}"/>
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="{{ photo.photo.url }}"/>
+      <div class="caption">
+        <p class="text-center">{{ photo.title }}</p>
+      </div>
+    </div>
+  </div>
 {% endfor %}
+</div>
 
 <a href="{% url "directory.views.company_photo_new" %}">add a company photo</a>
 
