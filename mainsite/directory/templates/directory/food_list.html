@@ -14,6 +14,7 @@
     <li class="sort"><a href="{% url "directory.views.food_sort" %}">Nutrition</a></li>
   </ul>
 </div>
+
 <table class="table">
 <thead>
   <tr>
@@ -22,13 +23,17 @@
   </tr>
 </thead>
 <tbody>
-	{% for food in foods %}
-		<tr>
-	        <td><a href="{% url "directory.views.food_detail" pk=food.pk %}">{{ food.name }}</a></td>
-	        <td>{{ food.company.name }}</a></td>
-	     </tr>
-	{% endfor %}
-	</tbody>
+  {% for key, value in fooddict.items %}
+    <tr>
+          <td><a href="{% url "directory.views.food_detail" string=key %}">{{ value.0 }}</a></td>
+          <td>
+          {% for val in value %}
+            {{ val.name }}
+          {% endfor %}
+          </td>
+       </tr>
+  {% endfor %}
+  </tbody>
 </table>
 <ul id="sort-results">
 

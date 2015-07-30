@@ -1,7 +1,6 @@
 {% extends "mainsite/base.html" %}
 
 {% block content %}
-
 <!-- Split button -->
 <div class="dropdown">
   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -14,20 +13,24 @@
   </ul>
 </div>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>name</th>
-        <th>parent</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for company in companies %}
-    	<tr>
-	        <td><a href="{% url "directory.views.company_detail" pk=company.pk %}">{{ company.name }}</a></td>
-	        <td><a href="{% url "directory.views.company_detail" pk=company.get_ancestor.pk %}">{{ company.get_ancestor.name }}</a></td>
-	     </tr>
-	{% endfor %}
-	</tbody>
-  </table>
+<table class="table">
+<thead>
+  <tr>
+    <th>Company</th>
+    <th>Ancestor</th>
+  </tr>
+</thead>
+<tbody>
+  {% for key, value in companydict.items %}
+    <tr>
+          <td><a href="{% url "directory.views.company_detail" string=key %}">{{ value.0 }}</a></td>
+          <td>
+          {% for val in value %}
+            {{ val.get_ancestor }}
+          {% endfor %}
+          </td>
+       </tr>
+  {% endfor %}
+  </tbody>
+</table>
 {% endblock content %}

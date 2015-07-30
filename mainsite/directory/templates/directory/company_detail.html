@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="page-header text-center">
-  <h1>{{ company.name }}</h1>
+  <h1>{{ companies.0.name }}</h1>
 </div>
 
 <div class="row">
@@ -24,9 +24,11 @@
 <div class="page-header text-center">
 	<h3>Parent Company</h3>
 </div>
-{% if company.parent != None %}
-	{{ company.parent }}
-{% endif %}
+{% for parent in parentlist %}
+  {% if parent != None %}
+	<button type="button" class="btn btn-default"><a href="{% url "directory.views.company_detail" string=parent|slugify %}">{{ parent }}</a></button>
+  {% endif %}
+{% endfor %}
 
 <div class="page-header text-center">
 	<h3>Subsidiaries</h3>
@@ -42,8 +44,8 @@
 <h3>Products</h3>
 </div>
 
-{% for food in foods %}
-	<button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=food.pk %}">{{ food.name }}</a></button>
+{% for food in foodlist %}
+	<button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" string=food|slugify %}">{{ food }}</a></button>
 {% endfor %}
 
 {% endblock content %}

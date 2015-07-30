@@ -6,7 +6,7 @@
 		{{ user.username }}
 
 	{% for field in form %}
-		{{ field.error }}
+		<div class="alert alert-warning" role="alert">{{ field.error }}</div>
 
 	{% endfor %}
 
@@ -19,7 +19,7 @@
 	<h3>Food Entries</h3>
 	{% for food in foods %}
 		<div class="btn-group" role="group" aria-label="...">
-		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=food.pk %}">{{ food.name }}</a></button>
+		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_entry" pk=food.pk %}">{{ food.name }}</a></button>
 		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#FoodModal{{ forloop.counter }}"><a>remove</a></button>
 		</div>
 		<div class="modal fade" id="FoodModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -69,7 +69,7 @@
 	<h3>Company Entries</h3>
 	{% for company in companies %}
 		<div class="btn-group" role="group" aria-label="...">
-		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.company_detail" pk=company.pk %}">{{ company.name }}</a></button>
+		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.company_entry" pk=company.pk %}">{{ company.name }}</a></button>
 		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CompanyModal{{ forloop.counter }}"><a>remove</a></button>
 		</div>
 		<div class="modal fade" id="CompanyModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -93,7 +93,7 @@
 	<h3>Photo Entries</h3>
 	{% for companyPhoto in companyPhotos %}
 		<div class="btn-group">
-		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.company_detail" pk=companyPhoto.company.pk %}">{{ companyPhoto.title }}</a></button>
+		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.company_entry" pk=companyPhoto.company.pk %}">{{ companyPhoto.title }}</a></button>
 		  <button type="button" class="btn btn-default"> {{ companyPhoto.company.name }}</button>
 		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CompanyPhotoModal{{ forloop.counter }}"><a>remove</a></button>
 		</div>
@@ -117,7 +117,7 @@
 	{% endfor %}
 	{% for foodPhoto in foodPhotos %}
 		<div class="btn-group" role="group" aria-label="...">
-		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=foodPhoto.food.pk %}">{{ foodPhoto.title }}</a></button>
+		  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_entry" pk=foodPhoto.food.pk %}">{{ foodPhoto.title }}</a></button>
 		  <button type="button" class="btn btn-default"> {{ foodPhoto.food.name }}</button>
 		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#FoodPhotoModal{{ forloop.counter }}"><a>remove</a></button>
 		</div>

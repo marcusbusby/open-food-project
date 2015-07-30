@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
 GRAMS = 'g'
 KILOGRAMS = 'kg'
@@ -18,8 +19,14 @@ class Food(models.Model):
 	company = models.ForeignKey('Company', null=True, blank=True)
 	user = models.ForeignKey(User)
 	edit = models.BooleanField(default=False)
+	entry_time = models.DateTimeField(default = timezone.now)
+	slug = models.SlugField(default='')
 
-	def get_contents(self):
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.name)
+		super(Food, self).save(*args, **kwargs)
+
+	"""def get_contents(self):
 		content_list = []
 		foodmaps = FoodMap.objects.filter(target = self)
 		for foodmap in foodmaps:
@@ -31,7 +38,7 @@ class Food(models.Model):
 		foodmaps = FoodMap.objects.filter(target = self)
 		for foodmap in foodmaps:
 			content_dict[foodmap.component] = [foodmap.component.name, foodmap.component.pk, foodmap.amount, foodmap.unit.__str__()]
-		return content_dict
+		return content_dict"""
 
 	def __str__(self):
 		return '%s' % self.name
@@ -46,6 +53,7 @@ class FoodMap(models.Model):
 	citation = models.CharField(max_length=200)
 	user = models.ForeignKey(User)
 	edit = models.BooleanField(default=False)
+	entry_time = models.DateTimeField(default = timezone.now)
 
 
 
@@ -55,6 +63,8 @@ class Company(models.Model):
 	parent = models.ForeignKey('self', null=True, blank=True)
 	user = models.ForeignKey(User)
 	edit = models.BooleanField(default=False)
+	entry_time = models.DateTimeField(default = timezone.now)
+	slug = models.SlugField(null=True)
 
 	def __str__(self):
 		return '%s' % self.name
@@ -87,16 +97,16 @@ class CompanyPhoto(models.Model):
 	title = models.CharField(max_length=50)
 	company = models.ForeignKey(Company)
 	user = models.ForeignKey(User)
+	entry_time = models.DateTimeField(default = timezone.now)
 
 class FoodPhoto(models.Model):
 	photo = models.ImageField(upload_to='photos')
 	title = models.CharField(max_length=50)
 	food = models.ForeignKey(Food)
 	user = models.ForeignKey(User)
+	entry_time = models.DateTimeField(default = timezone.now)
 
 
-"""base_amount = models.IntegerField()
-	base_unit = models.CharField(max_length = 10, choices=UNIT_OF_MEASURE)"""
 
 
 

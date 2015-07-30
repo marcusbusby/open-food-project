@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import FoodForm, CompanyForm, ComponentForm, CompanyPhotoForm, FoodPhotoForm
 from django.shortcuts import redirect
 
+# import pdb; pdb.set_trace()
+
 def search(request):
 	if request.method == "GET":
 		search_text = request.GET['search_text']
@@ -14,8 +16,6 @@ def search(request):
 	companies = Company.objects.filter(name__contains=search_text)
 
 
-	# import pdb; pdb.set_trace()
-
 	return render(request, 'directory/search.html', {'foods':foods, 'companies':companies})
 
 def food_sort(request):
@@ -24,40 +24,45 @@ def food_sort(request):
 
 	foods = Food.objects.order_by(sort_value)
 
-	# import pdb; pdb.set_trace()
-
 	return render(request, 'directory/food_sort.html', {'foods':foods})
 
 def food_list(request):
-	foods = Food.objects.filter(edit=False)
+	foods = Food.objects.all()
+	fooddict = {}
+	for food in foods:
+		if food.slug in fooddict:
+			fooddict[food.slug].append(food.company)
+		else:
+			fooddict[food.slug] = [food.name, food.company]
 	#foods = Food.objects.all()
-	return render(request, 'directory/food_list.html', {'foods': foods})
+	return render(request, 'directory/food_list.html', {'foods': foods, 'fooddict': fooddict})
 
-def food_detail(request, pk):
+def food_detail(request, string):
+	foods = Food.objects.filter(slug = string)
+	photos = []
+	foodmaps = []
+	companies = []
+	for food in foods:
+		companies.append(food.company)
+		photos.extend(FoodPhoto.objects.filter(food=food))
+		foodmaps.extend(FoodMap.objects.filter(target=food))
+	componentdict = {}
+
+	for foodmap in foodmaps:
+		if foodmap.component.name in componentdict:
+			componentdict[foodmap.component.name][1].append(foodmap.amount)
+		else:
+			componentdict[foodmap.component.name] = [foodmap.component.slug,[foodmap.amount]]
+
+	return render(request, 'directory/food_detail.html', {'foods': foods, 'photos':photos, 'companies': companies, 'componentdict': componentdict})
+
+def food_entry(request, pk):
 	food = get_object_or_404(Food, pk=pk)
-	contents = food.get_view_contents
+	"""contents = food.get_view_contents
 	photos = FoodPhoto.objects.filter(food=food)
-	foodmaps = FoodMap.objects.filter(target=food)
-	"""food_dict = {}
-	for foodmap in foodmaps:
-		if foodmap.component not in food_dict:
-			food_dict[foodmap.component]=[0,0]
-	
-	for foodmap in foodmaps:
-		for food in food_dict:
-			if foodmap.component == food.key:
-				food_dict[foodmap.component][0] += foodmap.component.amount
-				food_dict[foodmap.component][1] += 1 
-	for key, value in food_dict.items()
-		avg = value[0][0]/value[0][1]
-		food_dict[key] = avg
+	foodmaps = FoodMap.objects.filter(target=food)"""
 
-	cleanfoodmaps = []
-	for foodmap in foodmaps:
-		if foodmap.edit = False:
-			cleanfoodmaps += foodmap"""
-
-	return render(request, 'directory/food_detail.html', {'food': food, 'foodmaps': foodmaps, "photos": photos})
+	return render(request, 'directory/food_entry.html', {'food': food})
 
 @login_required
 def food_new(request):
@@ -107,21 +112,49 @@ def component_delete(request,pk):
 		foodmap.delete()
 		return redirect('userprofile.views.user_profile')
 
-def food_filter(request, pk):
-	company = Company.objects.get(pk = pk)
-	foods = Food.objects.filter(company=company)
-	return render(request, 'directory/food_list.html', {'foods': foods})
-
 def company_list(request):
 	companies = Company.objects.all()
-	return render(request, 'directory/company_list.html', {'companies': companies})
+	companydict = {}
+	for company in companies:
+		if company.slug in companydict:
+			companydict[company.slug].append(company.parent)
+		else:
+			companydict[company.slug] = [company.name, company.parent]
+	#foods = Food.objects.all()
+	return render(request, 'directory/company_list.html', {'companies': companies, 'companydict': companydict})
 
-def company_detail(request, pk):
+"""def company_list(request):
+	companies = Company.objects.all()
+	return render(request, 'directory/company_list.html', {'companies': companies})"""
+
+def company_entry(request, pk):
 	company = get_object_or_404(Company, pk=pk)
-	photos = CompanyPhoto.objects.filter(company=company)
-	foods = Food.objects.filter(company=company)
+	"""photos = CompanyPhoto.objects.filter(company=company)
+	foods = Food.objects.filter(company=company)"""
 	#import pdb; pdb.set_trace()
-	return render(request, 'directory/company_detail.html', {'company': company, 'foods': foods, 'photos':photos})
+	return render(request, 'directory/company_entry.html', {'company': company})
+
+def company_detail(request, string):
+	companies = Company.objects.filter(slug = string)
+	photos = []
+	parents = []
+	foods = []
+	parentlist = []
+	foodlist = []
+	for company in companies:
+		parents.append(company.parent)
+		photos.extend(CompanyPhoto.objects.filter(company=company))
+		foods.extend(Food.objects.filter(company=company))
+
+	for parent in parents:
+		if parent != None and parent.name not in parentlist:
+			parentlist.append(parent.name)
+
+	for food in foods:
+		if food.name not in foodlist:
+			foodlist.append(food.name)
+	#import pdb; pdb.set_trace()
+	return render(request, 'directory/company_detail.html', {'companies': companies, 'photos':photos, 'parentlist': parentlist, 'foodlist': foodlist})
 
 @login_required
 def company_new(request):
@@ -189,12 +222,3 @@ def food_photo_delete(request,pk):
 	if request.user == foodphoto.user:
 		foodphoto.delete()
 		return redirect('userprofile.views.user_profile')
-
-#to do tomorrow
-
-#change get_contents to return a list
-#add links to templates that go back and forth between data
-#ensure models methods are correct with carl
-#add a function that gets the foods of a company
-#add a function that calibrates the units of 
-#change base unit to choice area
