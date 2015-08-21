@@ -1,8 +1,15 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Food, Company, FoodMap, CompanyPhoto, FoodPhoto
+from .models import Food, Company, FoodMap, CompanyPhoto, FoodPhoto, Tag
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .forms import FoodForm, CompanyForm, ComponentForm, CompanyPhotoForm, FoodPhotoForm
+from .forms import FoodForm, CompanyForm, ComponentForm, CompanyPhotoForm, FoodPhotoForm, PointOfSaleForm, TagForm
 from django.shortcuts import redirect
+from rest_framework import status, permissions, generics
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from .serializers import CompanySerializer, UserSerializer, FoodSerializer, FoodMapSerializer
+from directory.permissions import IsOwnerOrReadOnly
 
 # import pdb; pdb.set_trace()
 
@@ -42,10 +49,12 @@ def food_detail(request, string):
 	photos = []
 	foodmaps = []
 	companies = []
+	pointsofsale = []
 	for food in foods:
 		companies.append(food.company)
 		photos.extend(FoodPhoto.objects.filter(food=food))
 		foodmaps.extend(FoodMap.objects.filter(target=food))
+		pointsofsale.append(food.pointofsale)
 	componentdict = {}
 
 	for foodmap in foodmaps:
@@ -54,7 +63,7 @@ def food_detail(request, string):
 		else:
 			componentdict[foodmap.component.name] = [foodmap.component.slug,[foodmap.amount]]
 
-	return render(request, 'directory/food_detail.html', {'foods': foods, 'photos':photos, 'companies': companies, 'componentdict': componentdict})
+	return render(request, 'directory/food_detail.html', {'foods': foods, 'photos':photos, 'companies': companies, 'pointsofsale': pointsofsale, 'componentdict': componentdict})
 
 def food_entry(request, pk):
 	food = get_object_or_404(Food, pk=pk)
@@ -67,13 +76,18 @@ def food_entry(request, pk):
 @login_required
 def food_new(request):
 	if request.method == "POST":
-		form = FoodForm(request.POST)
-		if form.is_valid():
-			form.save(request.user)
-			return redirect('directory.views.food_detail', pk=form.instance.pk)
+		foodform = FoodForm(request.POST)
+		posform = PointOfSaleForm(request.POST)
+		import pdb; pdb.set_trace()
+		if foodform.is_valid():
+			new_pos = posform.save(request.user)
+			#import pdb; pdb.set_trace()
+			new_food = foodform.save(new_pos, request.user)
+			return redirect('directory.views.food_entry', pk=foodform.instance.pk)
 	else:
-		form = FoodForm()
-	return render(request, 'directory/edit.html', {'form': form})
+		foodform = FoodForm()
+		posform = PointOfSaleForm()
+	return render(request, 'directory/food_edit.html', {'foodform': foodform, 'posform': posform})
 
 @login_required
 def food_edit(request, pk):
@@ -85,7 +99,7 @@ def food_edit(request, pk):
 			return redirect('directory.views.food_detail', pk=form.instance.pk)
 	else:
 		form = FoodForm(instance=food)
-	return render(request, 'directory/edit.html', {'form': form})
+	return render(request, 'directory/food_edit.html', {'form': form})
 
 @login_required
 def food_delete(request,pk):
@@ -105,12 +119,35 @@ def component_new(request):
 		form = ComponentForm()
 	return render(request, 'directory/edit.html', {'form': form})
 
+
+def tag_list(request):
+	tags = Tag.objects.all()
+	return render(request, 'directory/tag_list.html', {'tags': tags})
+
+def tag_entry(request, pk):
+	tag = get_object_or_404(Tag, pk=pk)
+	return render(request, 'directory/tag_entry.html', {'tag': tag})
+
+@login_required
+def tag_new(request):
+	if request.method == "POST":
+		form = TagForm(request.POST)
+		if form.is_valid():
+			form.save(request.user)
+			return redirect('directory.views.tag_list')
+	else:
+		form = TagForm()
+	return render(request, 'directory/edit.html', {'form': form})
+
+
 @login_required
 def component_delete(request,pk):
 	foodmap = get_object_or_404(FoodMap, pk=pk)
 	if request.user == foodmap.user:
 		foodmap.delete()
 		return redirect('userprofile.views.user_profile')
+
+#add list comprehension
 
 def company_list(request):
 	companies = Company.objects.all()
@@ -133,7 +170,7 @@ def company_entry(request, pk):
 	foods = Food.objects.filter(company=company)"""
 	#import pdb; pdb.set_trace()
 	return render(request, 'directory/company_entry.html', {'company': company})
-
+#add list comprehension
 def company_detail(request, string):
 	companies = Company.objects.filter(slug = string)
 	photos = []
@@ -222,3 +259,58 @@ def food_photo_delete(request,pk):
 	if request.user == foodphoto.user:
 		foodphoto.delete()
 		return redirect('userprofile.views.user_profile')
+
+@api_view(('GET',))
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'companies': reverse('company-list', request=request, format=format),
+        'foods': reverse('food-list', request=request, format=format)
+    })
+
+class CompanyList(generics.ListCreateAPIView):
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+	queryset = Company.objects.all()
+	serializer_class = CompanySerializer
+
+	def perform_create(self, serializer):
+	    serializer.save(user=self.request.user)
+
+class CompanyEntry(generics.RetrieveUpdateDestroyAPIView):
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+	queryset = Company.objects.all()
+	serializer_class = CompanySerializer
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserEntry(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class FoodList(generics.ListCreateAPIView):
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+	queryset = Food.objects.all()
+	serializer_class = FoodSerializer
+
+	def perform_create(self, serializer):
+	    serializer.save(user=self.request.user)
+
+class FoodEntry(generics.RetrieveUpdateDestroyAPIView):
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+	queryset = Food.objects.all()
+	serializer_class = FoodSerializer
+
+class FoodMapList(generics.ListCreateAPIView):
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+	queryset = FoodMap.objects.all()
+	serializer_class = FoodMapSerializer
+
+	def perform_create(self, serializer):
+	    serializer.save(user=self.request.user)
+
+class FoodMapEntry(generics.RetrieveUpdateDestroyAPIView):
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+	queryset = FoodMap.objects.all()
+	serializer_class = FoodMapSerializer

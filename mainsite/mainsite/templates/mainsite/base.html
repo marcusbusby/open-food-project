@@ -1,15 +1,21 @@
-<!--<!DOCTYPE html>-->
 {% load static %}
+<!--<!DOCTYPE html>-->
 <html>
 	<head>
+
 		<title>Open Food Project</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 		<link rel="stylesheet" href="{% static "assets/css/base.css" %}">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
-    <script src="{%static "assets/js/ajax.js" %}"></script>
+
+    {% block head %}
+    {% endblock %}
 	</head>
 
+
+
+
 <body>
+
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -64,9 +70,15 @@
 <ul id="search-results">
 
 </ul>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-</body>
 
-</html>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="{%static "assets/js/ajax.js" %}"></script>
 {% block content %}
 {% endblock %}
+</body>
+
+
+
+</html>

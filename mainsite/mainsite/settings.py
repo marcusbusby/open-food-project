@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'directory',
     'mainsite',
     'userprofile',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (

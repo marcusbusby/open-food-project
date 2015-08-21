@@ -1,4 +1,5 @@
-from django.conf.urls import url
+from django.conf.urls import url, patterns, include
+from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
 urlpatterns = [
@@ -22,4 +23,22 @@ urlpatterns = [
 	url(r'^food/photo/delete/(?P<pk>[0-9]+)/$', views.food_photo_delete),
 	url(r'^company/photo/delete/(?P<pk>[0-9]+)/$', views.company_photo_delete),
 	url(r'^company/photo/new/$', views.company_photo_new),
+	url(r'^tag/(?P<pk>[0-9]+)/$', views.tag_entry),
+	url(r'^tag/list/$', views.tag_list),
+	url(r'^tag/new/$', views.tag_new),
+	url(r'^api/companies/$', views.CompanyList.as_view(), name='company-list'),
+	url(r'^api/company/(?P<pk>[0-9]+)/$', views.CompanyEntry.as_view()),
+	url(r'^api/foods/$', views.FoodList.as_view(), name='food-list'),
+	url(r'^api/food/(?P<pk>[0-9]+)/$', views.FoodEntry.as_view()),
+	url(r'^api/foodmaps/$', views.FoodMapList.as_view(), name='foodmap-list'),
+	url(r'^api/foodmap/(?P<pk>[0-9]+)/$', views.FoodMapEntry.as_view()),
+	url(r'^api/users/$', views.UserList.as_view(), name='user-list'),
+	url(r'^api/users/(?P<pk>[0-9]+)/$', views.UserEntry.as_view()),
+	url(r'^api/$', views.api_root),
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
+urlpatterns += [
+    url(r'^api-auth/', include('rest_framework.urls',
+                               namespace='rest_framework')),
 ]

@@ -6,7 +6,7 @@
 		{{ user.username }}
 
 	{% for field in form %}
-		<div class="alert alert-warning" role="alert">{{ field.error }}</div>
+		{{ field.error }}
 
 	{% endfor %}
 

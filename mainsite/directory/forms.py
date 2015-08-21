@@ -1,17 +1,18 @@
 from django import forms
-from .models import Food, Company, FoodMap, CompanyPhoto, FoodPhoto
+from .models import Food, Company, FoodMap, CompanyPhoto, FoodPhoto, PointOfSale, Tag
 from django.template.defaultfilters import slugify
 
 class FoodForm(forms.ModelForm):
 
 	class Meta:
 		model = Food
-		fields = ['name', 'company']
-		exclude = ('user', 'edit', 'entry_time', 'slug')
+		fields = ['name', 'company', 'tags']
+		exclude = ('user', 'edit', 'entry_time', 'slug', 'pointofsale')
 
-	def save(self, user, present=False, commit=True):
+	def save(self, pos, user, present=False, commit=True):
 		food = forms.ModelForm.save(self, commit=False)
 		food.user = user
+		food.pointofsale = pos
 		food.slug = slugify(food.name)
 		if present:
 			food.edit = True
@@ -19,12 +20,27 @@ class FoodForm(forms.ModelForm):
 			food.save()
 		return food
 
+class PointOfSaleForm(forms.ModelForm):
+
+	class Meta:
+		model = PointOfSale
+		fields = ['latitude', 'longitude', 'seller', 'tags']
+		exclude = ('user',)
+
+	def save(self, user, commit=True):
+		pos = forms.ModelForm.save(self, commit=False)
+		pos.user = user
+		#import pdb; pdb.set_trace()
+		if commit:
+			pos.save()
+		return pos
+
 
 class CompanyForm(forms.ModelForm):
 
 	class Meta:
 		model = Company
-		fields = ['name', 'parent']
+		fields = ['name', 'parent', 'tags']
 		exclude = ('user', 'edit', 'entry_time', 'slug')
 
 	def save(self, user, commit=True):
@@ -53,7 +69,7 @@ class CompanyPhotoForm(forms.ModelForm):
 
 	class Meta:
 		model = CompanyPhoto
-		fields = ['photo', 'title', 'company']
+		fields = ['photo', 'title', 'company', 'tags']
 		exclude = ('user', 'entry_time')
 
 	def save(self, user, commit=True):
@@ -67,7 +83,7 @@ class FoodPhotoForm(forms.ModelForm):
 
 	class Meta:
 		model = FoodPhoto
-		fields = ['photo', 'title', 'food']
+		fields = ['photo', 'title', 'food', 'tags']
 		exclude = ('user', 'entry_time')
 
 	def save(self, user, commit=True):
@@ -76,3 +92,17 @@ class FoodPhotoForm(forms.ModelForm):
 		if commit:
 			foodphoto.save()
 		return foodphoto
+
+class TagForm(forms.ModelForm):
+
+	class Meta:
+		model = Tag
+		fields = ['name']
+
+	def save(self, user, commit=True):
+		tag = forms.ModelForm.save(self, commit=False)
+		tag.user = user
+		if commit:
+			tag.save()
+		return tag
+

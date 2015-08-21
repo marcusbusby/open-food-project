@@ -1,0 +1,35 @@
+{% extends "mainsite/base.html" %}
+
+{% block content %}
+
+<!-- Split button -->
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Sort By
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    <li class="sort" id="name"><a href="{% url "directory.views.food_sort" %}">Name</a></li>
+    <li class="sort" id="company"><a href="{% url "directory.views.food_sort" %}">Company Name</a></li>
+    <li class="sort"><a href="{% url "directory.views.food_sort" %}">Nutrition</a></li>
+  </ul>
+</div>
+
+<table class="table">
+<thead>
+  <tr>
+    <th>name</th>
+  </tr>
+</thead>
+<tbody>
+  {% for tag in tags %}
+    <tr>
+          <td><a href="{% url 'directory.views.tag_entry' pk=tag.pk %}">{{ tag.name }}</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<ul id="sort-results">
+
+</ul>
+{% endblock content %}
