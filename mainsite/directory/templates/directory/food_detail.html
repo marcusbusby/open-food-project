@@ -1,5 +1,9 @@
 {% extends "mainsite/base.html" %}
-
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="{%static "assets/css/leaflet.css" %}">
+{% endblock %}
 {% block content %}
 
 <div class="page-header text-center">
@@ -50,6 +54,26 @@
 	<a href="{% url "directory.views.food_entry" pk=food.pk %}">{{ food.user.username }}</a>
 
 {% endfor %}
+
+<p>Points of Sale<p>
+
+<div id="map"></div>
+{% for pos in pointsofsale %}
+	{{ pos.latitude }} {{ pos.longitude }}
+{% endfor %}
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+<script src="{%static "assets/js/leaflet.js" %}"></script>
+<script type="text/javascript">
+	for (i = 0; i < "{{pointsofsale|length}}"; i++) {
+		var lat = "{{pointsofsale.0.latitude}}";
+		var lng = "{{pointsofsale.0.longitude}}";
+		L.marker([lat,lng]).addTo(map);
+			console.log(lat, lng);
+			console.log(String(i));
+	};
+
+</script>
 <!--{% for key, value in contents.items %}
 	<div class="btn-group" role="group" aria-label="...">
 	  <button type="button" class="btn btn-default"><a href="{% url "directory.views.food_detail" pk=value.1 %}">{{ value.0 }}</a></button>

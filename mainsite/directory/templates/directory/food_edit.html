@@ -1,0 +1,23 @@
+{% extends "mainsite/base.html" %}
+
+{% load static %}
+
+{% block head %}
+
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="{%static "assets/css/leaflet.css" %}">
+
+{% endblock %}
+
+{% block content %}
+<form method="POST" class="post-form">{% csrf_token %}
+	{{ foodform.as_p }}
+	{{ posform.as_p }}
+	<div id="map"></div>
+	<button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+<script src="{%static "assets/js/leaflet.js" %}"></script>
+
+{% endblock %}
