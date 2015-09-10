@@ -5,66 +5,86 @@
 
 {% block head %}
 
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
-<link rel="stylesheet" type="text/css" href="{%static "assets/css/leaflet.css" %}">
 <link rel="stylesheet" type="text/css" href="{%static "assets/css/forms.css" %}">
 
 {% endblock %}
 
 {% block content %}
+
+
 <form method="POST" class="post-form">{% csrf_token %}
 	<div class="row">
 		<div class="col-xs-3 col-sm-3 col-md-4 frmlabel">
-			<p>name:</p>
+			<p>target:</p>
 		</div>
 		<div class="col-md-4 col-sm-6 col-xs-6">
-			<input class="form-control" id="id_name" maxlength="30" name="name" type="text">
+			{{ form.target|add_class:"form-control" }}
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-3 col-sm-3 col-md-4 frmlabel">
-			<p>company:</p>
+			<p>component:</p>
 		</div>
 		<div class="col-md-4 col-sm-6 col-xs-6">
-			{{ foodform.company|add_class:"form-control" }}
+			{{ form.component|add_class:"form-control" }}
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-3 col-sm-3 col-md-4 frmlabel">
-			<p>tags:</p>
+			<p>amount:</p>
 		</div>
 		<div class="col-md-4 col-sm-6 col-xs-6">
-			{{ foodform.tags|add_class:"form-control" }}
+			<input class="form-control" id="id_amount" name="amount" type="number">
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-3 col-sm-3 col-md-4 frmlabel">
-			<p>seller:</p>
+			<p>unit:</p>
 		</div>
 		<div class="col-md-4 col-sm-6 col-xs-6">
-			<input class="form-control" id="id_seller" maxlength="50" name="seller" type="text">
+			<select id="id_unit" name="unit">
+				<option value="" selected="selected">choose unit</option>
+				<option value="g">g</option>
+				<option value="kg">kg</option>
+				<option value="mg">mg</option>
+				<option value="fl oz">fl oz</option>
+				<option value="oz">oz</option>
+				<option value="L">L</option>
+				<option value="mL">mL</option>
+			</select>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-3 col-sm-3 col-md-4 frmlabel">
-			<p>latitude:</p>
+			<p>base amount:</p>
 		</div>
 		<div class="col-md-4 col-sm-6 col-xs-6">
-			<input class="form-control" id="id_latitude" name="latitude" step="1e-15" type="number">
+			<input class="form-control" id="id_base_amount" name="base_amount" type="number">
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-3 col-sm-3 col-md-4 frmlabel">
-			<p>longitude:</p>
+			<p>base unit:</p>
 		</div>
 		<div class="col-md-4 col-sm-6 col-xs-6">
-			<input class="form-control" id="id_longitude" name="longitude" step="1e-15" type="number">
+			<select id="id_base_unit" name="base_unit">
+				<option value="" selected="selected">---------</option>
+				<option value="g">g</option>
+				<option value="kg">kg</option>
+				<option value="mg">mg</option>
+				<option value="fl oz">fl oz</option>
+				<option value="oz">oz</option>
+				<option value="L">L</option>
+				<option value="mL">mL</option>
+			</select>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-3 col-sm-3 col-md-4 frmlabel"></div>
+		<div class="col-xs-3 col-sm-3 col-md-4 frmlabel">
+			<p>citation:</p>
+		</div>
 		<div class="col-md-4 col-sm-6 col-xs-6">
-			<div id="map"></div>
+			<input class="form-control" id="id_citation" maxlength="200" name="citation" type="text">
 		</div>
 	</div>
 	<div class="row">
@@ -74,7 +94,5 @@
 		</div>
 	</div>
 </form>
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
-<script src="{%static "assets/js/leaflet.js" %}"></script>
 
 {% endblock %}

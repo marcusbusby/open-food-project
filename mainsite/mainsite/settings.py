@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'mainsite',
     'userprofile',
     'rest_framework',
+    'widget_tweaks',
 )
 
 MIDDLEWARE_CLASSES = (

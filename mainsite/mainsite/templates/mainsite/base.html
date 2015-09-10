@@ -33,7 +33,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Foods<span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Foods</a>
           <ul class="dropdown-menu">
             <li><a href="{% url "directory.views.food_list" %}">Food List</a></li>
             <li><a href="{% url "directory.views.food_new" %}">Add Food</a></li>
@@ -41,10 +41,17 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Brands<span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Brands</a>
           <ul class="dropdown-menu">
             <li><a href="{% url "directory.views.company_list" %}">Company List</a></li>
             <li><a href="{% url "directory.views.company_new" %}">Add Brand</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tags</a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url "directory.views.tag_list" %}">Tag List</a></li>
+            <li><a href="{% url "directory.views.tag_new" %}">Add Tag</a></li>
           </ul>
         </li>
       </ul>

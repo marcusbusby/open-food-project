@@ -78,15 +78,15 @@ def food_new(request):
 	if request.method == "POST":
 		foodform = FoodForm(request.POST)
 		posform = PointOfSaleForm(request.POST)
-		import pdb; pdb.set_trace()
+		#import pdb; pdb.set_trace()
 		if foodform.is_valid():
 			new_pos = posform.save(request.user)
-			#import pdb; pdb.set_trace()
 			new_food = foodform.save(new_pos, request.user)
 			return redirect('directory.views.food_entry', pk=foodform.instance.pk)
 	else:
 		foodform = FoodForm()
 		posform = PointOfSaleForm()
+		#import pdb; pdb.set_trace()
 	return render(request, 'directory/food_edit.html', {'foodform': foodform, 'posform': posform})
 
 @login_required
@@ -117,7 +117,7 @@ def component_new(request):
 			return redirect('directory.views.food_list')
 	else:
 		form = ComponentForm()
-	return render(request, 'directory/edit.html', {'form': form})
+	return render(request, 'directory/component_edit.html', {'form': form})
 
 
 def tag_list(request):
@@ -137,7 +137,7 @@ def tag_new(request):
 			return redirect('directory.views.tag_list')
 	else:
 		form = TagForm()
-	return render(request, 'directory/edit.html', {'form': form})
+	return render(request, 'directory/tag_edit.html', {'form': form})
 
 
 @login_required
@@ -202,7 +202,7 @@ def company_new(request):
 			return redirect('directory.views.company_detail', pk=form.instance.pk)
 	else:
 		form = CompanyForm()
-	return render(request, 'directory/edit.html', {'form': form})
+	return render(request, 'directory/company_edit.html', {'form': form})
 
 @login_required
 def company_edit(request, pk):
@@ -214,7 +214,7 @@ def company_edit(request, pk):
 			return redirect('directory.views.company_detail', pk=form.instance.pk)
 	else:
 		form = CompanyForm(instance=company)
-	return render(request, 'directory/edit.html', {'form': form})
+	return render(request, 'directory/company_edit.html', {'form': form})
 
 @login_required
 def company_delete(request,pk):
